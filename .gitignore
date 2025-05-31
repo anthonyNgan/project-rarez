@@ -1,0 +1,117 @@
+### General ###
+*.log
+*.tmp
+*.swp
+*.DS_Store
+*.user
+*.suo
+*.vs
+.vscode/
+.idea/
+*.pidb
+*.ncrunchsolution
+*.ncrunchproject
+
+### C# & .NET ###
+bin/
+obj/
+TestResults/
+*.pdb
+*.exe
+*.dll
+*.cache
+*.dotCover
+*.coverage
+packages/
+.nuget/
+artifacts/
+appsettings.Development.json
+
+### .NET MAUI ###
+Resources/Raw/**/*.xml
+*.apk
+*.ipa
+*.aab
+*.keystore
+*.jks
+*.bundle
+*.mobileprovision
+*.p12
+*.snk
+*.msp
+
+### iOS ###
+# Xcode
+DerivedData/
+*.xcuserstate
+*.xcworkspace
+*.xcodeproj/
+build/
+*.app
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+### Android ###
+*.keystore
+*.apk
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+.gradle/
+local.properties
+*.hprof
+*.iml
+android/app/release/
+android/app/debug/
+
+### Web Scraping (Python/Node.js) ###
+# Python
+__pycache__/
+*.py[cod]
+*.venv
+env/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+.env
+dist/
+.cache/
+
+### Unity (if applicable) ###
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/Assets/AssetStoreTools*
+*.unityproj
+*.sln
+*.csproj
+
+### JetBrains Rider ###
+.idea/
+*.sln.iml
+*.csproj.iml
+
+### Visual Studio Code ###
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+### macOS ###
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
