@@ -1,4 +1,7 @@
-﻿namespace RarezItemWebScraper;
+﻿using HtmlAgilityPack;
+using System.Net.Http;
+
+namespace RarezItemWebScraper;
 
 public partial class MainPage : ContentPage
 {
@@ -9,15 +12,39 @@ public partial class MainPage : ContentPage
 		InitializeComponent();
 	}
 
-	private void OnCounterClicked(object? sender, EventArgs e)
+	private async void OnScrapeButtonClicked(object sender, EventArgs e)
 	{
-		count++;
+		string url = UrlEntry.Text?.Trim();
+		if (string.IsNullOrWhiteSpace(url))
+		{
+			ResultLabel.Text = "Please enter a URL.";
+			return;
+		}
 
-		if (count == 1)
-			CounterBtn.Text = $"Clicked {count} time";
-		else
-			CounterBtn.Text = $"Clicked {count} times";
+		ResultLabel.Text = "Scraping...";
+		try
+		{
+			string title = await ScrapeTitleAsync(url);
+			ResultLabel.Text = $"Page Title: {title}";
+		}
+		catch (Exception ex)
+		{
+			ResultLabel.Text = $"Error: {ex.Message}";
+		}
+	}
 
-		SemanticScreenReader.Announce(CounterBtn.Text);
+	private async Task<string> ScrapeTitleAsync(string url)
+	{
+		using var httpClient = new HttpClient();
+		httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
+			"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36");
+
+		var html = await httpClient.GetStringAsync(url);
+
+		var doc = new HtmlDocument();
+		doc.LoadHtml(html);
+
+		var titleNode = doc.DocumentNode.SelectSingleNode("//title");
+		return titleNode?.InnerText?.Trim() ?? "[No <title> found]";
 	}
 }
