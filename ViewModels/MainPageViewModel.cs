@@ -1,14 +1,19 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.Input;
 
 namespace RarezItemWebScraper.ViewModels;
 
 public class MainPageViewModel : INotifyPropertyChanged
 {
-    public ObservableCollection<ProductModel> AllProducts { get; set; } = new();
-    public ObservableCollection<ProductModel> FilteredProducts { get; set; } = new();
-    private string _searchText = string.Empty;
+    public ObservableCollection<ProductModel> AllProducts { get; } = new();
+    public ObservableCollection<ProductModel> FilteredProducts { get; } = new();
+    public AsyncRelayCommand<ProductModel?> ShowProductDetailCommand { get; }
 
+    private readonly PopMartScraper _scraper = new();
+
+    private string _searchText = string.Empty;
     public string SearchText
     {
         get => _searchText;
@@ -17,13 +22,17 @@ public class MainPageViewModel : INotifyPropertyChanged
             if (_searchText != value)
             {
                 _searchText = value;
-                OnPropertyChanged(nameof(SearchText));
+                OnPropertyChanged();
                 FilterProducts();
             }
         }
     }
 
-    private readonly PopMartScraper _scraper = new();
+    public MainPageViewModel()
+    {
+        _ = LoadProductsOnStartAsync();
+        ShowProductDetailCommand = new AsyncRelayCommand<ProductModel?>(LoadDetailImagesAsync);
+    }
 
     public async Task LoadProductsOnStartAsync()
     {
@@ -36,9 +45,9 @@ public class MainPageViewModel : INotifyPropertyChanged
                 AllProducts.Add(product);
             FilterProducts();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // Handle error
+            // Handle/log error, or expose an error property for the view
         }
     }
 
@@ -48,14 +57,40 @@ public class MainPageViewModel : INotifyPropertyChanged
         var filtered = string.IsNullOrWhiteSpace(SearchText)
             ? AllProducts
             : AllProducts.Where(p =>
-                (p.Name ?? "").ToLower().Contains(SearchText.ToLower()) ||
-                (p.Price ?? "").ToLower().Contains(SearchText.ToLower())
+                (p.Name ?? "").Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                (p.Price ?? "").Contains(SearchText, StringComparison.OrdinalIgnoreCase)
               );
         foreach (var item in filtered)
             FilteredProducts.Add(item);
     }
 
+    private async Task ShowProductDetailAsync(ProductModel product)
+    {
+        if (product == null) return;
+
+        // Clear before load (to clear old images)
+        product.DetailImageUrls.Clear();
+
+        var detailImages = await _scraper.GetProductDetailImagesAsync(product.Url);
+        foreach (var img in detailImages)
+            product.DetailImageUrls.Add(img);
+
+        // Now navigate or show modal -- for test, just log or break here
+        // await Shell.Current.GoToAsync("ProductDetailPage", ...);
+    }
+
+    public async Task LoadDetailImagesAsync(ProductModel product)
+    {
+        if (product == null || string.IsNullOrWhiteSpace(product.Url))
+            return;
+
+        var detailImages = await _scraper.GetProductDetailImagesAsync(product.Url);
+        product.DetailImageUrls.Clear();
+        foreach (var img in detailImages)
+            product.DetailImageUrls.Add(img);
+    }
+
     public event PropertyChangedEventHandler? PropertyChanged;
-    protected void OnPropertyChanged(string propertyName) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

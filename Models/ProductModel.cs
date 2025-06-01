@@ -1,13 +1,14 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-public class ProductModel : INotifyPropertyChanged
+public class ProductModel : ObservableObject, INotifyPropertyChanged
 {
     public string Name { get; }
     public string Price { get; }
     public string Url { get; }
     public string ImageUrl { get; }
-    public ObservableCollection<string> DetailImageUrls { get; } = new();
+    public ObservableCollection<string> DetailImageUrls { get; set; } = new();
 
     public ProductModel(string name, string price, string url, string imageUrl)
     {

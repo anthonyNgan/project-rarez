@@ -64,46 +64,35 @@ public class PopMartScraper : IProductScraper
         return products;
     }
 
-    public static async Task<List<string>> GetProductDetailImagesAsync(string detailUrl)
+    public async Task<List<string>> GetProductDetailImagesAsync(string productUrl)
     {
-        var imageUrls = new List<string>();
-        using var httpClient = new HttpClient();
-        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
+        var images = new List<string>();
+        using var http = new HttpClient();
+        http.DefaultRequestHeaders.UserAgent.ParseAdd(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36");
-        var html = await httpClient.GetStringAsync(detailUrl);
-
+        var html = await http.GetStringAsync(productUrl);
         var doc = new HtmlAgilityPack.HtmlDocument();
         doc.LoadHtml(html);
 
-        // Find all main detail images
         var imgNodes = doc.DocumentNode.SelectNodes("//img[contains(@class, 'rimage__image')]");
         if (imgNodes != null)
         {
-            foreach (var imgNode in imgNodes)
+            foreach (var node in imgNodes)
             {
-                var srcSet = imgNode.GetAttributeValue("data-srcset", null)
-                        ?? imgNode.GetAttributeValue("srcset", null)
-                        ?? imgNode.GetAttributeValue("src", null)
-                        ?? imgNode.GetAttributeValue("data-src", null);
+                var url = node.GetAttributeValue("data-srcset", null)
+                      ?? node.GetAttributeValue("srcset", null)
+                      ?? node.GetAttributeValue("src", null)
+                      ?? node.GetAttributeValue("data-src", null);
 
-                if (!string.IsNullOrWhiteSpace(srcSet))
+                if (!string.IsNullOrWhiteSpace(url))
                 {
-                    // Pick a decent resolution (e.g., 540x, 720x, or highest available in srcset)
-                    var urls = srcSet.Split(',');
-                    // Pick the highest available (last in the list)
-                    var lastUrl = urls.LastOrDefault()?.Trim().Split(' ')[0] ?? "";
-                    string imageUrl = lastUrl;
-
-                    if (imageUrl.StartsWith("//"))
-                        imageUrl = "https:" + imageUrl;
-                    else if (imageUrl.StartsWith("/"))
-                        imageUrl = "https://www.popmart.nz" + imageUrl;
-
-                    if (!string.IsNullOrWhiteSpace(imageUrl) && !imageUrls.Contains(imageUrl))
-                        imageUrls.Add(imageUrl);
+                    url = url.Split(',')[0].Trim().Split(' ')[0];
+                    if (url.StartsWith("//")) url = "https:" + url;
+                    else if (url.StartsWith("/")) url = "https://www.popmart.nz" + url;
+                    images.Add(url);
                 }
             }
         }
-        return imageUrls;
+        return images;
     }
 }
