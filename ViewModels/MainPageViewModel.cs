@@ -9,7 +9,7 @@ public class MainPageViewModel : INotifyPropertyChanged
 {
     public ObservableCollection<ProductModel> AllProducts { get; } = new();
     public ObservableCollection<ProductModel> FilteredProducts { get; } = new();
-    public AsyncRelayCommand<ProductModel?> ShowProductDetailCommand { get; }
+    public AsyncRelayCommand<ProductModel> LoadProductDetailCommand { get; }
 
     private readonly PopMartScraper _scraper = new();
 
@@ -31,7 +31,7 @@ public class MainPageViewModel : INotifyPropertyChanged
     public MainPageViewModel()
     {
         _ = LoadProductsOnStartAsync();
-        ShowProductDetailCommand = new AsyncRelayCommand<ProductModel?>(LoadDetailImagesAsync);
+        LoadProductDetailCommand = new AsyncRelayCommand<ProductModel>(LoadProductDetailAsync);
     }
 
     public async Task LoadProductsOnStartAsync()
@@ -79,12 +79,13 @@ public class MainPageViewModel : INotifyPropertyChanged
         // await Shell.Current.GoToAsync("ProductDetailPage", ...);
     }
 
-    public async Task LoadDetailImagesAsync(ProductModel product)
+    public async Task LoadProductDetailAsync(ProductModel product)
     {
         if (product == null || string.IsNullOrWhiteSpace(product.Url))
             return;
 
         var detailImages = await _scraper.GetProductDetailImagesAsync(product.Url);
+        product.StockStatus = await _scraper.GetProductStockStatusAsync(product.Url);
         product.DetailImageUrls.Clear();
         foreach (var img in detailImages)
             product.DetailImageUrls.Add(img);

@@ -1,3 +1,5 @@
+using HtmlAgilityPack;
+
 public class PopMartScraper : IProductScraper
 {
     public string SourceName => "PopMart";
@@ -94,5 +96,29 @@ public class PopMartScraper : IProductScraper
             }
         }
         return images;
+    }
+
+    public async Task<string> GetProductStockStatusAsync(string productUrl)
+    {
+        using var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36");
+        var html = await httpClient.GetStringAsync(productUrl);
+
+        var doc = new HtmlDocument();
+        doc.LoadHtml(html);
+
+        var submitBtn = doc.DocumentNode
+            .SelectSingleNode("//div[contains(@class, 'quantity-submit-row__submit')]//button[contains(@class, 'button--large')]");
+        if (submitBtn != null)
+        {
+            var classValue = submitBtn.GetAttributeValue("class", "");
+            if (classValue.Contains("button--sold-out"))
+                return "Out of Stock";
+            if (submitBtn.InnerText.Trim().Equals("Add to Cart", StringComparison.OrdinalIgnoreCase))
+                return "In Stock";
+            return $"Unknown ({submitBtn.InnerText.Trim()})";
+        }
+        return "Unknown";
     }
 }

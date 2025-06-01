@@ -79,9 +79,16 @@
                                    TextColor="#A2FF86"
                                    FontSize="Medium"
                                    FontAttributes="Bold"/>
-                            <Label Text="{Binding Url}"
-                                   TextColor="#6DABF8"
-                                   LineBreakMode="TailTruncation"/>
+                            <HorizontalStackLayout Spacing="6"
+                                    VerticalOptions="Center">
+                                <Label Text="Status:"
+                                       FontSize="Small"
+                                       TextColor="#AAA"/>
+                                <Label Text="{Binding StockStatus}"
+                                       FontAttributes="Bold"
+                                       FontSize="Medium"
+                                       TextColor="{Binding StockStatusColor}"/>
+                            </HorizontalStackLayout>
                         </VerticalStackLayout>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding OpenLinkCommand}"/>

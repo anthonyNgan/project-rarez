@@ -9,6 +9,25 @@ public class ProductModel : ObservableObject, INotifyPropertyChanged
     public string Url { get; }
     public string ImageUrl { get; }
     public ObservableCollection<string> DetailImageUrls { get; set; } = new();
+    private string _stockStatus;
+    public string StockStatus
+    {
+        get => _stockStatus;
+        set
+        {
+            if (_stockStatus != value)
+            {
+                _stockStatus = value;
+                OnPropertyChanged(nameof(StockStatus));
+                OnPropertyChanged(nameof(StockStatusColor));
+            }
+        }
+    }
+
+    public Color StockStatusColor =>
+        StockStatus == "In Stock" ? Colors.LimeGreen :
+        StockStatus == "Out of Stock" ? Colors.Red :
+        Colors.Gray;
 
     public ProductModel(string name, string price, string url, string imageUrl)
     {
