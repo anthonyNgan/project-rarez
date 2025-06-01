@@ -1,22 +1,23 @@
-using System.Windows.Input;
-public class ProductModel
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+
+public class ProductModel : INotifyPropertyChanged
 {
     public string Name { get; }
     public string Price { get; }
     public string Url { get; }
     public string ImageUrl { get; }
-    public ICommand OpenLinkCommand { get; }
+    public ObservableCollection<string> DetailImageUrls { get; } = new();
 
-    public ProductModel(string name, string price, string url, string imageUrl, ICommand? openLinkCommand = null)
+    public ProductModel(string name, string price, string url, string imageUrl)
     {
         Name = name;
         Price = price;
         Url = url;
         ImageUrl = imageUrl;
-        OpenLinkCommand = openLinkCommand ?? new Command(async () =>
-        {
-            if (!string.IsNullOrWhiteSpace(url))
-                await Launcher.Default.OpenAsync(url);
-        });
     }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected void OnPropertyChanged(string propertyName) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }
