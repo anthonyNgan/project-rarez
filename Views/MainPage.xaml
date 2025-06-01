@@ -6,36 +6,43 @@
           BackgroundColor="#19171a">
 
         <!-- Sticky Top Menu Bar -->
-        <HorizontalStackLayout
-            Grid.Row="0"
-            BackgroundColor="#2C2C2E"
-            HeightRequest="54"
-            Padding="12,0"
-            VerticalOptions="Start"
-            HorizontalOptions="Fill"
-            Spacing="24">
-            <Button Text="Home"
-                    StyleClass="MenuBarButton"
-                    Clicked="OnHomeClicked"/>
-            <Button Text="Products"
-                    StyleClass="MenuBarButton"
-                    Clicked="OnProductsClicked"/>
-            <Button Text="Search"
-                    StyleClass="MenuBarButton"
-                    Clicked="OnSearchClicked"/>
-            <Button Text="Account"
-                    StyleClass="MenuBarButton"
-                    Clicked="OnAccountClicked"/>
-        </HorizontalStackLayout>
+        <Grid Grid.Row="0"
+              BackgroundColor="#2C2C2E"
+              HeightRequest="54"
+              ColumnDefinitions="*,*,*,*">
+            <Border Grid.Column="0"
+                    Background="Transparent">
+                <Button Text="Home"
+                        StyleClass="MenuBarButton"
+                        Clicked="OnHomeClicked"/>
+            </Border>
+            <Border Grid.Column="1"
+                    Background="Transparent">
+                <Button Text="Products"
+                        StyleClass="MenuBarButton"
+                        Clicked="OnProductsClicked"/>
+            </Border>
+            <Border Grid.Column="2"
+                    Background="Transparent">
+                <Button Text="Search"
+                        StyleClass="MenuBarButton"
+                        Clicked="OnSearchClicked"/>
+            </Border>
+            <Border Grid.Column="3"
+                    Background="Transparent">
+                <Button Text="Account"
+                        StyleClass="MenuBarButton"
+                        Clicked="OnAccountClicked"/>
+            </Border>
+        </Grid>
 
-        <!-- Scrollable Main Content (CollectionView) -->
+        <!-- Main Content -->
         <CollectionView
             Grid.Row="1"
             x:Name="ProductsView"
             ItemsSource="{Binding FilteredProducts}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <!-- Enable compiled bindings -->
                     <Border
                         Stroke="#B4B4B4"
                         StrokeThickness="1"
@@ -83,23 +90,24 @@
         </CollectionView>
 
         <!-- Sticky Bottom Filter Bar -->
-        <Border
-            Grid.Row="2"
-            BackgroundColor="#2C2C2E"
-            Padding="8">
-            <HorizontalStackLayout Spacing="12">
+        <Border Grid.Row="2"
+                Background="#2C2C2E"
+                Padding="0"
+                StrokeShape="Rectangle">
+            <Grid ColumnDefinitions="*">
                 <SearchBar x:Name="ProductSearchBar"
+                           Grid.Column="0"
                            Placeholder="Filter products..."
                            Text="{Binding SearchText}"
                            FontSize="18"
                            BackgroundColor="#232226"
                            TextColor="#FFF"
                            CancelButtonColor="#AAA"
-                           Margin="0"
+                           Margin="8,0"
                            SearchButtonPressed="OnFilterSearchPressed"
                            TextChanged="OnSearchTextChanged"/>
-                <!-- Add future dropdowns/buttons here for more filtering -->
-            </HorizontalStackLayout>
+                <!-- Add more filter controls in new columns as needed -->
+            </Grid>
         </Border>
 
     </Grid>
