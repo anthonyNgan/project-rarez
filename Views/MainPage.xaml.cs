@@ -1,7 +1,6 @@
-﻿using HtmlAgilityPack;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using HtmlAgilityPack;
 
 namespace RarezItemWebScraper;
 
@@ -106,27 +105,5 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
 			}
 		}
 		return products;
-	}
-}
-
-public class ProductViewModel
-{
-	public string Name { get; }
-	public string Price { get; }
-	public string Url { get; }
-	public string ImageUrl { get; }
-	public ICommand OpenLinkCommand { get; }
-
-	public ProductViewModel(string name, string price, string url, string imageUrl)
-	{
-		Name = name;
-		Price = price;
-		Url = url;
-		ImageUrl = imageUrl;
-		OpenLinkCommand = new Command(() =>
-		{
-			if (!string.IsNullOrWhiteSpace(url))
-				Launcher.OpenAsync(new Uri(url));
-		});
 	}
 }
