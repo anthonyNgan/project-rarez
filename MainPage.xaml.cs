@@ -10,17 +10,12 @@ public partial class MainPage : ContentPage
 	public MainPage()
 	{
 		InitializeComponent();
+		_ = LoadProductsOnStartAsync();
 	}
 
-	private async void OnScrapeButtonClicked(object sender, EventArgs e)
+	private async Task LoadProductsOnStartAsync()
 	{
-		string url = UrlEntry.Text?.Trim();
-		if (string.IsNullOrWhiteSpace(url))
-		{
-			ResultLabel.Text = "Please enter a URL.";
-			return;
-		}
-
+		string url = "https://www.popmart.nz/collections/products?sort_by=created-ascending";
 		ResultLabel.Text = "Scraping products...";
 		try
 		{
@@ -29,9 +24,8 @@ public partial class MainPage : ContentPage
 			if (products.Count > 0)
 			{
 				var lines = products
-					.Take(10) // Show first 10 for demo
+					.Take(10)
 					.Select(p => $"{p.Name} — {p.Price}\n{p.Url}");
-
 				ResultLabel.Text = "Products:\n\n" + string.Join("\n\n", lines);
 			}
 			else

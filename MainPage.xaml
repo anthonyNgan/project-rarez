@@ -5,19 +5,12 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="30"
-                             Spacing="16">
-            <Label Text="Enter a URL:"
-                   FontSize="18"/>
-            <Entry x:Name="UrlEntry"
-                   Placeholder="https://www.popmart.nz/collections/products?sort_by=created-ascending"
-                   Text="https://www.popmart.nz/collections/products?sort_by=created-ascending"/>
-            <Button Text="Scrape Title"
-                    Clicked="OnScrapeButtonClicked"/>
-            <Label Text="Result:"
-                   FontAttributes="Bold"/>
+                Spacing="16">
+            <Label Text="Products from PopMart:"
+                    FontSize="18"/>
             <Label x:Name="ResultLabel"
-                   FontSize="14"
-                   LineBreakMode="WordWrap"/>
+                    FontSize="14"
+                    LineBreakMode="WordWrap"/>
         </VerticalStackLayout>
     </ScrollView>
 
