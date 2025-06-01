@@ -1,16 +1,21 @@
-﻿public partial class MainPage : ContentPage
+﻿using RarezItemWebScraper.ViewModels;
+
+namespace RarezItemWebScraper.Views
 {
-	private MainPageViewModel ViewModel => (MainPageViewModel)BindingContext;
-
-	public MainPage()
+	public partial class MainPage : ContentPage
 	{
-		InitializeComponent();
-		BindingContext = new MainPageViewModel();
-		_ = ViewModel.LoadProductsOnStartAsync();
-	}
+		private MainPageViewModel ViewModel => (MainPageViewModel)BindingContext;
 
-	private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
-	{
-		ViewModel.SearchText = e.NewTextValue;
+		public MainPage()
+		{
+			InitializeComponent();
+			BindingContext = new MainPageViewModel();
+			_ = ViewModel.LoadProductsOnStartAsync();
+		}
+
+		private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+		{
+			ViewModel.SearchText = e.NewTextValue;
+		}
 	}
 }

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                 xmlns:local="clr-namespace:RarezItemWebScraper"
-                 x:Class="RarezItemWebScraper.MainPage"
+                 xmlns:local="clr-namespace:RarezItemWebScraper.Views"
+                 x:Class="RarezItemWebScraper.Views.MainPage"
                  Title="PopMart Products">
 
     <ScrollView>
@@ -19,7 +19,7 @@
             <CollectionView x:Name="ProductsView"
                             ItemsSource="{Binding FilteredProducts}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="local:ProductViewModel">
+                    <DataTemplate>
                         <Border
                             Stroke="#B4B4B4"
                             StrokeThickness="1"

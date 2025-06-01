@@ -1,14 +1,12 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using RarezItemWebScraper.Models;
-using RarezItemWebScraper.Scrapers;
 
 namespace RarezItemWebScraper.ViewModels;
 
 public class MainPageViewModel : INotifyPropertyChanged
 {
-    public ObservableCollection<ProductViewModel> AllProducts { get; set; } = new();
-    public ObservableCollection<ProductViewModel> FilteredProducts { get; set; } = new();
+    public ObservableCollection<ProductModel> AllProducts { get; set; } = new();
+    public ObservableCollection<ProductModel> FilteredProducts { get; set; } = new();
     private string _searchText = string.Empty;
 
     public string SearchText
@@ -38,7 +36,7 @@ public class MainPageViewModel : INotifyPropertyChanged
                 AllProducts.Add(product);
             FilterProducts();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Handle error
         }

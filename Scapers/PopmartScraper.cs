@@ -2,10 +2,9 @@ public class PopMartScraper : IProductScraper
 {
     public string SourceName => "PopMart";
 
-    public async Task<List<ProductModel>> GetProductsAsync()
+    public async Task<List<ProductModel>> GetProductsAsync(string url)
     {
         var products = new List<ProductModel>();
-        var url = "https://www.popmart.nz/collections/products?sort_by=created-ascending";
         using var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36");
