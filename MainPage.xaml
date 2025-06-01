@@ -4,13 +4,35 @@
              x:Class="RarezItemWebScraper.MainPage">
 
     <ScrollView>
-        <VerticalStackLayout Padding="30"
-                Spacing="16">
-            <Label Text="Products from PopMart:"
-                    FontSize="18"/>
-            <Label x:Name="ResultLabel"
-                    FontSize="14"
-                    LineBreakMode="WordWrap"/>
+        <VerticalStackLayout Padding="20"
+                             Spacing="16">
+            <Label Text="Latest PopMart Products"
+                   FontSize="22"
+                   HorizontalOptions="Center"/>
+            <CollectionView x:Name="ProductsView"
+                            ItemsSource="{Binding Products}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="5"
+                                Padding="10">
+                            <VerticalStackLayout Spacing="5">
+                                <Image Source="{Binding ImageUrl}"
+                                       HeightRequest="120"
+                                       WidthRequest="120"
+                                       Aspect="AspectFill"/>
+                                <Label Text="{Binding Name}"
+                                       FontAttributes="Bold"/>
+                                <Label Text="{Binding Price}"
+                                       TextColor="DarkGreen"/>
+                                <Label Text="{Binding Url}"
+                                       TextColor="Blue"
+                                       GestureRecognizers="{Binding OpenLinkCommand}"
+                                       LineBreakMode="TailTruncation"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </VerticalStackLayout>
     </ScrollView>
 
