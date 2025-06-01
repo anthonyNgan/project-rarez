@@ -1,6 +1,6 @@
 using System.Windows.Input;
 
-public class ProductViewModel
+public class ProductModel
 {
     public string Name { get; }
     public string Price { get; }
