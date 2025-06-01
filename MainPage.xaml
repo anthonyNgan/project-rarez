@@ -1,38 +1,72 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="RarezItemWebScraper.MainPage">
+<ContentPage     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:local="clr-namespace:RarezItemWebScraper"
+                 x:Class="RarezItemWebScraper.MainPage"
+                 Title="PopMart Products">
 
     <ScrollView>
         <VerticalStackLayout Padding="20"
                              Spacing="16">
-            <Label Text="Latest PopMart Products"
-                   FontSize="22"
-                   HorizontalOptions="Center"/>
+            <SearchBar x:Name="ProductSearchBar"
+                       Placeholder="Filter products..."
+                       TextChanged="OnSearchTextChanged"
+                       FontSize="18"
+                       BackgroundColor="#232226"
+                       TextColor="#FFF"
+                       CancelButtonColor="#AAA"
+                       Margin="0,0,0,10"/>
             <CollectionView x:Name="ProductsView"
-                            ItemsSource="{Binding Products}">
+                            ItemsSource="{Binding FilteredProducts}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Border Margin="5"
-                                Padding="10">
-                            <VerticalStackLayout Spacing="5">
-                                <Image Source="{Binding ImageUrl}"
-                                       HeightRequest="120"
-                                       WidthRequest="120"
-                                       Aspect="AspectFill"/>
+                    <DataTemplate x:DataType="local:ProductViewModel">
+                        <Border
+                            Stroke="#B4B4B4"
+                            StrokeThickness="1"
+                            Background="#232226"
+                            Margin="10,6"
+                            StrokeShape="RoundRectangle 18"
+                            Shadow="2,4,12,#33000000">
+                            <VerticalStackLayout Padding="12"
+                                                 Spacing="7">
+                                <Image
+                                    Source="{Binding ImageUrl}"
+                                    HeightRequest="120"
+                                    WidthRequest="120"
+                                    Aspect="AspectFill"
+                                    BackgroundColor="#18171B"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center">
+                                    <Image.Triggers>
+                                        <DataTrigger TargetType="Image"
+                                                     Binding="{Binding ImageUrl}"
+                                                     Value="">
+                                            <Setter Property="Source"
+                                                    Value="dotnet_bot.png"/>
+                                        </DataTrigger>
+                                    </Image.Triggers>
+                                </Image>
                                 <Label Text="{Binding Name}"
-                                       FontAttributes="Bold"/>
+                                       FontAttributes="Bold"
+                                       FontSize="Medium"
+                                       TextColor="#FFF"
+                                       LineBreakMode="WordWrap"/>
                                 <Label Text="{Binding Price}"
-                                       TextColor="DarkGreen"/>
+                                       TextColor="#A2FF86"
+                                       FontSize="Medium"
+                                       FontAttributes="Bold"/>
                                 <Label Text="{Binding Url}"
-                                       TextColor="Blue"
-                                       GestureRecognizers="{Binding OpenLinkCommand}"
+                                       TextColor="#6DABF8"
                                        LineBreakMode="TailTruncation"/>
                             </VerticalStackLayout>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding OpenLinkCommand}"/>
+                            </Border.GestureRecognizers>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
         </VerticalStackLayout>
     </ScrollView>
 

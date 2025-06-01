@@ -1,11 +1,31 @@
 ﻿using HtmlAgilityPack;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using System.ComponentModel;
 
 namespace RarezItemWebScraper;
 
-public partial class MainPage : ContentPage
+public partial class MainPage : ContentPage, INotifyPropertyChanged
 {
+
+	public ObservableCollection<ProductViewModel> AllProducts { get; set; } = new();
+	public ObservableCollection<ProductViewModel> FilteredProducts { get; set; } = new();
+	private string _searchText = string.Empty;
+
+	public string SearchText
+	{
+		get => _searchText;
+		set
+		{
+			if (_searchText != value)
+			{
+				_searchText = value;
+				OnPropertyChanged();
+				FilterProducts();
+			}
+		}
+	}
+
 	public ObservableCollection<ProductViewModel> Products { get; set; } = new();
 
 	public MainPage()
@@ -22,14 +42,34 @@ public partial class MainPage : ContentPage
 		{
 			var products = await ScrapeProductsPopmartAsync(url);
 
-			Products.Clear();
-			foreach (var (Name, Price, Url, ImageUrl) in products.Take(12))
-				Products.Add(new ProductViewModel(Name, Price, Url, ImageUrl));
+			AllProducts.Clear();
+			foreach (var (Name, Price, Url, ImageUrl) in products.Take(50))
+				AllProducts.Add(new ProductViewModel(Name, Price, Url, ImageUrl));
+			FilterProducts();
 		}
 		catch (Exception ex)
 		{
 			await DisplayAlert("Error", ex.Message, "OK");
 		}
+	}
+
+	private void FilterProducts()
+	{
+		FilteredProducts.Clear();
+		var filtered = string.IsNullOrWhiteSpace(SearchText)
+			? AllProducts
+			: AllProducts.Where(p =>
+				(p.Name ?? "").ToLower().Contains(SearchText.ToLower()) ||
+				(p.Price ?? "").ToLower().Contains(SearchText.ToLower())
+			  );
+		foreach (var item in filtered)
+			FilteredProducts.Add(item);
+	}
+
+	// This gets called by the SearchBar TextChanged event in XAML
+	private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+	{
+		SearchText = e.NewTextValue;
 	}
 
 	private async Task<List<(string Name, string Price, string Url, string ImageUrl)>> ScrapeProductsPopmartAsync(string url)
