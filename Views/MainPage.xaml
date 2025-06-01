@@ -1,72 +1,106 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                 xmlns:local="clr-namespace:RarezItemWebScraper.Views"
-                 x:Class="RarezItemWebScraper.Views.MainPage"
-                 Title="PopMart Products">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RarezItemWebScraper.Views.MainPage">
+    <Grid RowDefinitions="Auto,*,Auto"
+          BackgroundColor="#19171a">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20"
-                             Spacing="16">
-            <SearchBar x:Name="ProductSearchBar"
-                       Placeholder="Filter products..."
-                       TextChanged="OnSearchTextChanged"
-                       FontSize="18"
-                       BackgroundColor="#232226"
-                       TextColor="#FFF"
-                       CancelButtonColor="#AAA"
-                       Margin="0,0,0,10"/>
-            <CollectionView x:Name="ProductsView"
-                            ItemsSource="{Binding FilteredProducts}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Border
-                            Stroke="#B4B4B4"
-                            StrokeThickness="1"
-                            Background="#232226"
-                            Margin="10,6"
-                            StrokeShape="RoundRectangle 18">
-                            <VerticalStackLayout Padding="12"
-                                                 Spacing="7">
-                                <Image
-                                    Source="{Binding ImageUrl}"
-                                    HeightRequest="120"
-                                    WidthRequest="120"
-                                    Aspect="AspectFill"
-                                    BackgroundColor="#18171B"
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center">
-                                    <Image.Triggers>
-                                        <DataTrigger TargetType="Image"
-                                                     Binding="{Binding ImageUrl}"
-                                                     Value="">
-                                            <Setter Property="Source"
-                                                    Value="dotnet_bot.png"/>
-                                        </DataTrigger>
-                                    </Image.Triggers>
-                                </Image>
-                                <Label Text="{Binding Name}"
-                                       FontAttributes="Bold"
-                                       FontSize="Medium"
-                                       TextColor="#FFF"
-                                       LineBreakMode="WordWrap"/>
-                                <Label Text="{Binding Price}"
-                                       TextColor="#A2FF86"
-                                       FontSize="Medium"
-                                       FontAttributes="Bold"/>
-                                <Label Text="{Binding Url}"
-                                       TextColor="#6DABF8"
-                                       LineBreakMode="TailTruncation"/>
-                            </VerticalStackLayout>
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding OpenLinkCommand}"/>
-                            </Border.GestureRecognizers>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+        <!-- Sticky Top Menu Bar -->
+        <HorizontalStackLayout
+            Grid.Row="0"
+            BackgroundColor="#2C2C2E"
+            HeightRequest="54"
+            Padding="12,0"
+            VerticalOptions="Start"
+            HorizontalOptions="Fill"
+            Spacing="24">
+            <Button Text="Home"
+                    StyleClass="MenuBarButton"
+                    Clicked="OnHomeClicked"/>
+            <Button Text="Products"
+                    StyleClass="MenuBarButton"
+                    Clicked="OnProductsClicked"/>
+            <Button Text="Search"
+                    StyleClass="MenuBarButton"
+                    Clicked="OnSearchClicked"/>
+            <Button Text="Account"
+                    StyleClass="MenuBarButton"
+                    Clicked="OnAccountClicked"/>
+        </HorizontalStackLayout>
 
-        </VerticalStackLayout>
-    </ScrollView>
+        <!-- Scrollable Main Content (CollectionView) -->
+        <CollectionView
+            Grid.Row="1"
+            x:Name="ProductsView"
+            ItemsSource="{Binding FilteredProducts}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <!-- Enable compiled bindings -->
+                    <Border
+                        Stroke="#B4B4B4"
+                        StrokeThickness="1"
+                        Background="#232226"
+                        Margin="10,6"
+                        StrokeShape="RoundRectangle 18">
+                        <VerticalStackLayout Padding="12"
+                                             Spacing="7">
+                            <Image
+                                Source="{Binding ImageUrl}"
+                                HeightRequest="120"
+                                WidthRequest="120"
+                                Aspect="AspectFill"
+                                BackgroundColor="#18171B"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center">
+                                <Image.Triggers>
+                                    <DataTrigger TargetType="Image"
+                                                 Binding="{Binding ImageUrl}"
+                                                 Value="">
+                                        <Setter Property="Source"
+                                                Value="dotnet_bot.png"/>
+                                    </DataTrigger>
+                                </Image.Triggers>
+                            </Image>
+                            <Label Text="{Binding Name}"
+                                   FontAttributes="Bold"
+                                   FontSize="Medium"
+                                   TextColor="#FFF"
+                                   LineBreakMode="WordWrap"/>
+                            <Label Text="{Binding Price}"
+                                   TextColor="#A2FF86"
+                                   FontSize="Medium"
+                                   FontAttributes="Bold"/>
+                            <Label Text="{Binding Url}"
+                                   TextColor="#6DABF8"
+                                   LineBreakMode="TailTruncation"/>
+                        </VerticalStackLayout>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenLinkCommand}"/>
+                        </Border.GestureRecognizers>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
+        <!-- Sticky Bottom Filter Bar -->
+        <Border
+            Grid.Row="2"
+            BackgroundColor="#2C2C2E"
+            Padding="8">
+            <HorizontalStackLayout Spacing="12">
+                <SearchBar x:Name="ProductSearchBar"
+                           Placeholder="Filter products..."
+                           Text="{Binding SearchText}"
+                           FontSize="18"
+                           BackgroundColor="#232226"
+                           TextColor="#FFF"
+                           CancelButtonColor="#AAA"
+                           Margin="0"
+                           SearchButtonPressed="OnFilterSearchPressed"
+                           TextChanged="OnSearchTextChanged"/>
+                <!-- Add future dropdowns/buttons here for more filtering -->
+            </HorizontalStackLayout>
+        </Border>
+
+    </Grid>
 </ContentPage>
