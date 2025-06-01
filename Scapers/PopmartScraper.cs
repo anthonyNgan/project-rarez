@@ -33,13 +33,13 @@ public class PopMartScraper : IProductScraper
                 var imgNode = linkNode?.SelectSingleNode(".//img");
                 string imageUrl = imgNode?.GetAttributeValue("src", "") ?? "";
 
-                products.Add(new ProductModel
-                {
-                    Name = name,
-                    Price = price,
-                    Url = fullUrl,
-                    ImageUrl = imageUrl
-                });
+                products.Add(new ProductModel(
+                    name,
+                    price,
+                    fullUrl,
+                    imageUrl,
+                    null
+                ));
             }
         }
         return products;
