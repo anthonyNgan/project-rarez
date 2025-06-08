@@ -36,10 +36,10 @@ public class MainPageViewModel : INotifyPropertyChanged
 
     public async Task LoadProductsOnStartAsync()
     {
-        string url = "https://www.popmart.nz/collections/products?sort_by=created-ascending";
+        string url = "https://www.popmart.nz/collections/products?sort_by=created-descending";
         try
         {
-            var products = await _scraper.GetProductsAsync(url);
+            var products = await _scraper.GetSortedProductsAsync(url);
             AllProducts.Clear();
             foreach (var product in products.Take(50))
                 AllProducts.Add(product);
