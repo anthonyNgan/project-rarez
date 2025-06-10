@@ -12,7 +12,7 @@ public class PopMartScraper : IProductScraper
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36");
         var html = await httpClient.GetStringAsync(url);
 
-        var doc = new HtmlAgilityPack.HtmlDocument();
+        var doc = new HtmlDocument();
         doc.LoadHtml(html);
 
         var productNodes = doc.DocumentNode.SelectNodes("//div[contains(@class, 'product-info')]");

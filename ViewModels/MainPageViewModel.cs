@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using CommunityToolkit.Mvvm.Input;
 
 namespace RarezItemWebScraper.ViewModels;
@@ -30,6 +31,7 @@ public class MainPageViewModel : INotifyPropertyChanged
 
     public MainPageViewModel()
     {
+        LoadProductsFromFileAsync("products.json").Wait();
         _ = LoadProductsOnStartAsync();
         LoadProductDetailCommand = new AsyncRelayCommand<ProductModel>(LoadProductDetailAsync);
     }
@@ -39,11 +41,12 @@ public class MainPageViewModel : INotifyPropertyChanged
         string url = "https://www.popmart.nz/collections/products?sort_by=created-descending";
         try
         {
-            var products = await _scraper.GetSortedProductsAsync(url);
+            var products = await _scraper.GetProductsAsync(url);
             AllProducts.Clear();
-            foreach (var product in products.Take(50))
+            foreach (var product in products.Take(250))
                 AllProducts.Add(product);
             FilterProducts();
+            await SaveProductsToFileAsync("products.json");
         }
         catch (Exception ex)
         {
@@ -89,6 +92,37 @@ public class MainPageViewModel : INotifyPropertyChanged
         product.DetailImageUrls.Clear();
         foreach (var img in detailImages)
             product.DetailImageUrls.Add(img);
+    }
+
+    public async Task AddOrUpdateProductAsync(string productUrl)
+    {
+        var products = await _scraper.GetProductsAsync(productUrl);
+        foreach (var p in products)
+            AllProducts.Add(p);
+    }
+
+    public async Task SaveProductsToFileAsync(string filePath)
+    {
+        var options = new JsonSerializerOptions { WriteIndented = true };
+        var list = AllProducts.ToList();
+        using var stream = File.Create(filePath);
+        await JsonSerializer.SerializeAsync(stream, list, options);
+    }
+
+    public async Task LoadProductsFromFileAsync(string filePath)
+    {
+        if (!File.Exists(filePath))
+            return;
+
+        using var stream = File.OpenRead(filePath);
+        var products = await JsonSerializer.DeserializeAsync<List<ProductModel>>(stream);
+        AllProducts.Clear();
+        if (products != null)
+        {
+            foreach (var product in products)
+                AllProducts.Add(product);
+        }
+        FilterProducts();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

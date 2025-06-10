@@ -1,7 +1,7 @@
 public interface IProductScraper
 {
-    Task<List<ProductModel>> GetProductsAsync(string url);
-    Task<List<string>> GetProductDetailImagesAsync(string url);
-    Task<string> GetProductStockStatusAsync(string productUrl);
     string SourceName { get; }
+    Task<List<ProductModel>> GetProductsAsync(string url);
+    Task<List<string>> GetProductDetailImagesAsync(string productUrl);
+    Task<string> GetProductStockStatusAsync(string productUrl);
 }
